@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import dirData from "./dirData.json";
+import { BreadCrumb, Container, NavigatorWindow } from "./components";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [path, setPath] = useState("root");
+	const [searchTerm, setSearchTerm] = useState("");
+
+	return (
+		<Container>
+			<BreadCrumb
+				dirData={dirData}
+				setPath={setPath}
+				path={path}
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+			/>
+			<NavigatorWindow
+				searchTerm={searchTerm}
+				dirData={dirData}
+				setPath={setPath}
+				path={path}
+				setSearchTerm={setSearchTerm}
+			/>
+		</Container>
+	);
 }
 
 export default App;
