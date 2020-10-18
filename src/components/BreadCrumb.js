@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { HiArrowCircleUp } from "react-icons/hi";
 
-import uuidv4 from '../utils/uuidv4';
+import uuidv4 from "../utils/uuidv4";
 
 const BreadCrumbDiv = styled.div`
 	height: 60px;

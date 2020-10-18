@@ -6,7 +6,11 @@ const updateChildrenForDir = (currDir, newChildren, oldData) => {
 		} else if (data.type === "directory") {
 			return {
 				...data,
-				children: updateChildrenForDir(currDir, newChildren, data.children),
+				children: updateChildrenForDir(
+					currDir,
+					newChildren,
+					data.children || []
+				),
 			};
 		} else {
 			return data;

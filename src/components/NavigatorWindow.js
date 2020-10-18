@@ -51,7 +51,7 @@ const NavigatorWindow = ({
 	setDirData,
 }) => {
 	const FILE = "file";
-	const FOLDER = "folder";
+	const FOLDER = "directory";
 
 	const [childNodes, setChildNodes] = useState([]);
 	const [showAddModal, setShowAddModal] = useState(false);
@@ -137,12 +137,12 @@ const NavigatorWindow = ({
 				path: path + "/" + nodeName,
 				type: addNodeType,
 				name: nodeName,
+				children: addNodeType === FOLDER && [],
 			};
 			let newChildren = [...oldChildren, newChild];
 
 			const currDir = pathArr[pathArr.length - 1];
 			const oldData = JSON.parse(JSON.stringify(dirData));
-			console.log(Array.isArray(oldData));
 			const newData = updateChildrenForDir(currDir, newChildren, oldData);
 			setDirData(() => newData);
 			handleModalClose();
