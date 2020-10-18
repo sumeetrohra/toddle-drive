@@ -18,6 +18,10 @@ const FolderDiv = styled.div`
 	}
 `;
 
+const P = styled.p`
+	text-align: center;
+`;
+
 const Folder = ({ folderName, setPath, path, setSearchTerm, searchTerm }) => {
 	const handleSetPath = () => {
 		if (searchTerm) {
@@ -53,7 +57,7 @@ const Folder = ({ folderName, setPath, path, setSearchTerm, searchTerm }) => {
 	return (
 		<FolderDiv onClick={handleClick}>
 			<img src={FolderImage} alt="Folder" />
-			<p>{folderName}</p>
+			<P>{folderName}</P>
 		</FolderDiv>
 	);
 };

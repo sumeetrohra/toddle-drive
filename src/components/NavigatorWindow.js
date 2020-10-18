@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
 import File from "./File";
 import Folder from "./Folder";
-import searchDirectories from '../utils/searchDirectories';
+import Modal from "./Modal";
+import ContextMenu from "./ContextMenu";
+import searchDirectories from "../utils/searchDirectories";
+import AddNewButton from "../assets/add_new_button.png";
+import updateChildrenForDir from "../utils/updateChildrenForDir";
 
 const NavigatorContainer = styled.div`
 	padding: 20px 20px 0 20px;
@@ -12,8 +19,42 @@ const NavigatorContainer = styled.div`
 	grid-template-columns: repeat(auto-fit, 120px);
 `;
 
-const NavigatorWindow = ({ setPath, path, dirData, searchTerm, setSearchTerm }) => {
+const AddImage = styled.img`
+	width: 70px;
+	margin: 10px;
+	cursor: pointer;
+`;
+
+const ButtonGroupDiv = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	alig-items: center;
+`;
+
+const GridContainer = styled.div`
+	display: grid;
+	grid-template-columns: auto;
+	grid-gap: 10px;
+	padding: 0 20px;
+`;
+
+const NavigatorWindow = ({
+	setPath,
+	path,
+	dirData,
+	searchTerm,
+	setSearchTerm,
+	setDirData,
+}) => {
+	const FILE = "file";
+	const FOLDER = "folder";
+
 	const [childNodes, setChildNodes] = useState([]);
+	const [showAddModal, setShowAddModal] = useState();
+	const [addNodeType, setAddNodeType] = useState(FILE);
+	const [nodeName, setNodeName] = useState("");
+	const [renameNode, setRenameNode] = useState();
 
 	const getChildren = (pathArr) => {
 		let nodes = dirData;
@@ -32,32 +73,162 @@ const NavigatorWindow = ({ setPath, path, dirData, searchTerm, setSearchTerm }) 
 			setChildNodes(nodes);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [path, searchTerm]);
+	}, [path, searchTerm, dirData]);
 
 	useEffect(() => {
 		if (searchTerm) {
-			const foundNodes = searchDirectories(dirData, searchTerm)
+			const foundNodes = searchDirectories(dirData, searchTerm);
 			setChildNodes(foundNodes);
 		}
 	}, [dirData, searchTerm]);
+
+	const addModalBody = () => {
+		return (
+			<GridContainer>
+				<ButtonGroupDiv>
+					<ToggleButtonGroup type="checkbox" size="sm">
+						<Button
+							disabled={!!renameNode}
+							variant={addNodeType === FILE ? "primary" : "light"}
+							value={FILE}
+							onClick={() => setAddNodeType(FILE)}>
+							File
+						</Button>
+						<Button
+							disabled={!!renameNode}
+							variant={addNodeType === FOLDER ? "primary" : "light"}
+							value={FOLDER}
+							onClick={() => setAddNodeType(FOLDER)}>
+							Folder
+						</Button>
+					</ToggleButtonGroup>
+				</ButtonGroupDiv>
+				<Form>
+					<Form.Control
+						type="text"
+						placeholder="name"
+						value={nodeName}
+						onChange={(event) => setNodeName(event.target.value)}
+					/>
+				</Form>
+			</GridContainer>
+		);
+	};
+
+	const handleModalClose = () => {
+		setAddNodeType(FILE);
+		setShowAddModal(false);
+		setNodeName("");
+		setRenameNode();
+	};
+
+	const handleAddNode = () => {
+		const pathArr = path.split("/");
+
+		if (nodeName) {
+			const oldChildren = getChildren(pathArr) || [];
+			const newChild = {
+				path: path + "/" + nodeName,
+				type: addNodeType,
+				name: nodeName,
+			};
+			let newChildren = [...oldChildren, newChild];
+
+			const currDir = pathArr[pathArr.length - 1];
+			const oldData = JSON.parse(JSON.stringify(dirData));
+			const newData = updateChildrenForDir(currDir, newChildren, oldData);
+			setDirData(() => newData);
+			handleModalClose();
+		}
+	};
+
+	const handleDelete = (item) => {
+		const pathArr = path.split("/");
+		const oldChildren = getChildren(pathArr) || [];
+		console.log(oldChildren, item);
+		const newChildren = oldChildren.filter((node) => node.name !== item.name);
+
+		const currDir = pathArr[pathArr.length - 1];
+		const oldData = JSON.parse(JSON.stringify(dirData));
+		const newData = updateChildrenForDir(currDir, newChildren, oldData);
+		setDirData(newData);
+	};
+
+	const handleRenameNode = () => {
+		const item = renameNode;
+		const pathArr = path.split('/');
+		if (nodeName) {
+			const oldChildren = getChildren(pathArr) || [];
+			const newChildren = oldChildren.map((node) => {
+				console.log(node);
+				if (item.name === node.name) {
+					const nodePath = node.path.split('/').slice(0, node.path.length - 1).join('/') + '/' + nodeName;
+					return {
+						path: nodePath,
+						name: nodeName,
+						type: node.type,
+						children: node.children
+					}
+				}
+				return node;
+			});
+
+			const currDir = pathArr[pathArr.length - 1];
+			const oldData = JSON.parse(JSON.stringify(dirData));
+			const newData = updateChildrenForDir(currDir, newChildren, oldData);
+			setDirData(() => newData);
+			handleModalClose();
+		}
+	}
+
+	const openRenameModal = (item) => {
+		setRenameNode(item);
+		setNodeName(item.name);
+		setAddNodeType(item.type === "directory" ? FOLDER : FILE);
+		setShowAddModal(true);
+	};
 
 	return (
 		<NavigatorContainer>
 			{Array.isArray(childNodes) &&
 				childNodes.map((item) =>
 					item.type === "file" ? (
-						<File fileName={item.name} key={item.path} />
+						<ContextMenu
+							id={item.path}
+							onRenameClick={() => openRenameModal(item)}
+							onClickDelete={() => handleDelete(item)}
+							key={item.path}>
+							<File fileName={item.name} />
+						</ContextMenu>
 					) : (
-						<Folder
-							folderName={item.name}
-							setPath={setPath}
-							path={path}
+						<ContextMenu
+							id={item.path}
 							key={item.path}
-							setSearchTerm={setSearchTerm}
-							searchTerm={searchTerm}
-						/>
+							onRenameClick={() => openRenameModal(item)}
+							onClickDelete={() => handleDelete(item)}>
+							<Folder
+								folderName={item.name}
+								setPath={setPath}
+								path={path}
+								setSearchTerm={setSearchTerm}
+								searchTerm={searchTerm}
+							/>
+						</ContextMenu>
 					)
 				)}
+			<AddImage
+				src={AddNewButton}
+				alt="add file or folder"
+				onClick={() => setShowAddModal(true)}
+			/>
+			<Modal
+				showModal={showAddModal}
+				handleClose={handleModalClose}
+				header={renameNode ? "Edit name" : "Create new"}
+				confirmText={renameNode ? "Save changes" : "Create"}
+				body={addModalBody()}
+				onConfirm={() => renameNode ? handleRenameNode() : handleAddNode()}
+			/>
 		</NavigatorContainer>
 	);
 };

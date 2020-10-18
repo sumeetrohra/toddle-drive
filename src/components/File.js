@@ -31,6 +31,10 @@ const FileExt = styled.p`
 	color: white;
 `;
 
+const P = styled.p`
+	text-align: center;
+`;
+
 const File = ({ fileName }) => {
 	const ext = fileName.split(".").pop();
 
@@ -40,7 +44,7 @@ const File = ({ fileName }) => {
 				<img src={FileImage} alt="file" />
 				<FileExt>.{ext}</FileExt>
 			</ImageDiv>
-			<p>{fileName}</p>
+			<P>{fileName}</P>
 		</FileDiv>
 	);
 };

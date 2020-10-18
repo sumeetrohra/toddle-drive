@@ -1,70 +1,80 @@
-[{
-  "path": "root",
-  "type": "directory",
-  "name": "root",
-  "children": [
-    {
-      "path": "root/docs",
-      "type": "directory",
-      "name": "docs",
-      "children": [
-        {
-          "path": "root/docs/identities",
-          "type": "directory",
-          "name": "identities",
-          "children": [
-            {
-              "path": "root/docs/idtentites/aadhar.pdf",
-              "type": "file",
-              "name": "aadhar.pdf"
-            },
-            {
-              "path": "root/docs/idtentites/pan card.pdf",
-              "type": "file",
-              "name": "pan card.pdf"
-            },
-            {
-              "path": "root/docs/idtentites/driving license.jpg",
-              "type": "file",
-              "name": "driving license.jpg"
-            }
-          ]
-        },
-        {
-          "path": "root/docs/whitepaper.pdf",
-          "type": "file",
-          "name": "whitepaper.pdf"
-        }
-      ]
-    },
-    {
-      "path": "root/movies",
-      "type": "directory",
-      "name": "movies",
-      "children": [
-        {
-          "path": "root/movies/captain america.mp4",
-          "type": "file",
-          "name": "captain america.mp4"
-        },{
-          "path": "root/movies/captain america.srt",
-          "type": "file",
-          "name": "captain america.srt"
-        },{
-          "path": "root/movies/baby driver.mp4",
-          "type": "file",
-          "name": "baby driver.mp4"
-        },{
-          "path": "root/movies/baby driver.srt",
-          "type": "file",
-          "name": "baby driver.srt"
-        }
-      ]
-    },
-    {
-      "path": "root/resume.pdf",
-      "type": "file",
-      "name": "resume.pdf"
-    }
-  ]
-}]
+[
+	{
+		"path": "root",
+		"type": "directory",
+		"name": "root",
+		"children": [
+			{
+				"path": "root/docs",
+				"type": "directory",
+				"name": "docs",
+				"children": [
+					{
+						"path": "root/docs/identities",
+						"type": "directory",
+						"name": "identities",
+						"children": [
+							{
+								"path": "root/docs/idtentites/aadhar.pdf",
+								"type": "file",
+								"name": "aadhar.pdf"
+							},
+							{
+								"path": "root/docs/idtentites/pan card.pdf",
+								"type": "file",
+								"name": "pan card.pdf"
+							},
+							{
+								"path": "root/docs/idtentites/driving license.jpg",
+								"type": "file",
+								"name": "driving license.jpg"
+							}
+						]
+					},
+					{
+						"path": "root/docs/whitepaper.pdf",
+						"type": "file",
+						"name": "whitepaper.pdf"
+					}
+				]
+			},
+			{
+				"path": "root/movies",
+				"type": "directory",
+				"name": "movies",
+				"children": [
+					{
+						"path": "root/movies/captain america.mp4",
+						"type": "file",
+						"name": "captain america.mp4"
+					},
+					{
+						"path": "root/movies/captain america.srt",
+						"type": "file",
+						"name": "captain america.srt"
+					},
+					{
+						"path": "root/movies/baby driver.mp4",
+						"type": "file",
+						"name": "baby driver.mp4"
+					},
+					{
+						"path": "root/movies/baby driver.srt",
+						"type": "file",
+						"name": "baby driver.srt"
+					}
+				]
+			},
+			{
+				"path": "root/Empty Folder",
+				"type": "directory",
+				"name": "Empty Folder"
+			},
+			{
+				"path": "root/resume.pdf",
+				"type": "file",
+				"name": "resume.pdf"
+			}
+		]
+	}
+]

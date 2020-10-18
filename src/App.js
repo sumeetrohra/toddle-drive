@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import dirData from "./dirData.json";
+import data from "./dirData.json";
 import { BreadCrumb, Container, NavigatorWindow } from "./components";
 
 function App() {
+	const [dirData, setDirData] = useState(data);
 	const [path, setPath] = useState("root");
 	const [searchTerm, setSearchTerm] = useState("");
 
@@ -23,6 +24,7 @@ function App() {
 				setPath={setPath}
 				path={path}
 				setSearchTerm={setSearchTerm}
+				setDirData={setDirData}
 			/>
 		</Container>
 	);
