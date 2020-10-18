@@ -9,6 +9,7 @@ import ContextMenu from "./ContextMenu";
 import searchDirectories from "../utils/searchDirectories";
 import AddNewButton from "../assets/add_new_button.png";
 import updateChildrenForDir from "../utils/updateChildrenForDir";
+import uuidv4 from "../utils/uuidv4";
 
 const PageContainer = styled.div`
 	height: 90vh;
@@ -141,6 +142,7 @@ const NavigatorWindow = ({
 
 			const currDir = pathArr[pathArr.length - 1];
 			const oldData = JSON.parse(JSON.stringify(dirData));
+			console.log(Array.isArray(oldData));
 			const newData = updateChildrenForDir(currDir, newChildren, oldData);
 			setDirData(() => newData);
 			handleModalClose();
@@ -213,6 +215,7 @@ const NavigatorWindow = ({
 
 			const currDir = pathArr[pathArr.length - 1];
 			const oldData = JSON.parse(JSON.stringify(dirData));
+			console.log(Array.isArray(oldData));
 			const newData = updateChildrenForDir(currDir, newChildren, oldData);
 			setDirData(() => newData);
 			setCopiedNode();
@@ -234,13 +237,13 @@ const NavigatorWindow = ({
 									onCopyClick={() => setCopiedNode(item)}
 									onRenameClick={() => openRenameModal(item)}
 									onClickDelete={() => handleDelete(item)}
-									key={item.path}>
+									key={uuidv4()}>
 									<File fileName={item.name} />
 								</ContextMenu>
 							) : (
 								<ContextMenu
 									id={item.path}
-									key={item.path}
+									key={uuidv4()}
 									onCopyClick={() => setCopiedNode(item)}
 									onRenameClick={() => openRenameModal(item)}
 									onClickDelete={() => handleDelete(item)}>
