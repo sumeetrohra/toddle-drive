@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import { ToggleButtonGroup, Button, Form } from "react-bootstrap";
 
 import File from "./File";
 import Folder from "./Folder";
@@ -61,7 +59,7 @@ const NavigatorWindow = ({
 	const [renameNode, setRenameNode] = useState();
 	const [copiedNode, setCopiedNode] = useState();
 
-	console.log(copiedNode)
+	console.log(copiedNode);
 
 	const getChildren = (pathArr) => {
 		let nodes = dirData;
@@ -206,10 +204,10 @@ const NavigatorWindow = ({
 				type: copiedNode.type,
 				name: copiedNode.name,
 				children: copiedNode.children,
-				path: path + '/' + copiedNode.name
-			}
+				path: path + "/" + copiedNode.name,
+			};
 
-			const pathArr = path.split('/');
+			const pathArr = path.split("/");
 			const oldChildren = getChildren(pathArr) || [];
 			let newChildren = [...oldChildren, newChild];
 
@@ -219,10 +217,13 @@ const NavigatorWindow = ({
 			setDirData(() => newData);
 			setCopiedNode();
 		}
-	}
+	};
 
 	return (
-		<ContextMenu id="nav-window" copiedNode={copiedNode} onPasteClick={handlePaste}>
+		<ContextMenu
+			id="nav-window"
+			copiedNode={copiedNode}
+			onPasteClick={handlePaste}>
 			<PageContainer>
 				<NavigatorContainer>
 					{Array.isArray(childNodes) &&
