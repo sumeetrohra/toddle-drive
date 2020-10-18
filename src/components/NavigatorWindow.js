@@ -12,6 +12,10 @@ import searchDirectories from "../utils/searchDirectories";
 import AddNewButton from "../assets/add_new_button.png";
 import updateChildrenForDir from "../utils/updateChildrenForDir";
 
+const PageContainer = styled.div`
+	height: 90vh;
+`;
+
 const NavigatorContainer = styled.div`
 	padding: 20px 20px 0 20px;
 	display: grid;
@@ -51,10 +55,13 @@ const NavigatorWindow = ({
 	const FOLDER = "folder";
 
 	const [childNodes, setChildNodes] = useState([]);
-	const [showAddModal, setShowAddModal] = useState();
+	const [showAddModal, setShowAddModal] = useState(false);
 	const [addNodeType, setAddNodeType] = useState(FILE);
 	const [nodeName, setNodeName] = useState("");
 	const [renameNode, setRenameNode] = useState();
+	const [copiedNode, setCopiedNode] = useState();
+
+	console.log(copiedNode)
 
 	const getChildren = (pathArr) => {
 		let nodes = dirData;
@@ -145,7 +152,6 @@ const NavigatorWindow = ({
 	const handleDelete = (item) => {
 		const pathArr = path.split("/");
 		const oldChildren = getChildren(pathArr) || [];
-		console.log(oldChildren, item);
 		const newChildren = oldChildren.filter((node) => node.name !== item.name);
 
 		const currDir = pathArr[pathArr.length - 1];
@@ -156,19 +162,25 @@ const NavigatorWindow = ({
 
 	const handleRenameNode = () => {
 		const item = renameNode;
-		const pathArr = path.split('/');
+		const pathArr = path.split("/");
 		if (nodeName) {
 			const oldChildren = getChildren(pathArr) || [];
 			const newChildren = oldChildren.map((node) => {
 				console.log(node);
 				if (item.name === node.name) {
-					const nodePath = node.path.split('/').slice(0, node.path.length - 1).join('/') + '/' + nodeName;
+					const nodePath =
+						node.path
+							.split("/")
+							.slice(0, node.path.length - 1)
+							.join("/") +
+						"/" +
+						nodeName;
 					return {
 						path: nodePath,
 						name: nodeName,
 						type: node.type,
-						children: node.children
-					}
+						children: node.children,
+					};
 				}
 				return node;
 			});
@@ -179,7 +191,7 @@ const NavigatorWindow = ({
 			setDirData(() => newData);
 			handleModalClose();
 		}
-	}
+	};
 
 	const openRenameModal = (item) => {
 		setRenameNode(item);
@@ -188,48 +200,77 @@ const NavigatorWindow = ({
 		setShowAddModal(true);
 	};
 
+	const handlePaste = () => {
+		if (copiedNode) {
+			const newChild = {
+				type: copiedNode.type,
+				name: copiedNode.name,
+				children: copiedNode.children,
+				path: path + '/' + copiedNode.name
+			}
+
+			const pathArr = path.split('/');
+			const oldChildren = getChildren(pathArr) || [];
+			let newChildren = [...oldChildren, newChild];
+
+			const currDir = pathArr[pathArr.length - 1];
+			const oldData = JSON.parse(JSON.stringify(dirData));
+			const newData = updateChildrenForDir(currDir, newChildren, oldData);
+			setDirData(() => newData);
+			setCopiedNode();
+		}
+	}
+
 	return (
-		<NavigatorContainer>
-			{Array.isArray(childNodes) &&
-				childNodes.map((item) =>
-					item.type === "file" ? (
-						<ContextMenu
-							id={item.path}
-							onRenameClick={() => openRenameModal(item)}
-							onClickDelete={() => handleDelete(item)}
-							key={item.path}>
-							<File fileName={item.name} />
-						</ContextMenu>
-					) : (
-						<ContextMenu
-							id={item.path}
-							key={item.path}
-							onRenameClick={() => openRenameModal(item)}
-							onClickDelete={() => handleDelete(item)}>
-							<Folder
-								folderName={item.name}
-								setPath={setPath}
-								path={path}
-								setSearchTerm={setSearchTerm}
-								searchTerm={searchTerm}
-							/>
-						</ContextMenu>
-					)
-				)}
-			<AddImage
-				src={AddNewButton}
-				alt="add file or folder"
-				onClick={() => setShowAddModal(true)}
-			/>
-			<Modal
-				showModal={showAddModal}
-				handleClose={handleModalClose}
-				header={renameNode ? "Edit name" : "Create new"}
-				confirmText={renameNode ? "Save changes" : "Create"}
-				body={addModalBody()}
-				onConfirm={() => renameNode ? handleRenameNode() : handleAddNode()}
-			/>
-		</NavigatorContainer>
+		<ContextMenu id="nav-window" copiedNode={copiedNode} onPasteClick={handlePaste}>
+			<PageContainer>
+				<NavigatorContainer>
+					{Array.isArray(childNodes) &&
+						childNodes.map((item) =>
+							item.type === "file" ? (
+								<ContextMenu
+									id={item.path}
+									onCopyClick={() => setCopiedNode(item)}
+									onRenameClick={() => openRenameModal(item)}
+									onClickDelete={() => handleDelete(item)}
+									key={item.path}>
+									<File fileName={item.name} />
+								</ContextMenu>
+							) : (
+								<ContextMenu
+									id={item.path}
+									key={item.path}
+									onCopyClick={() => setCopiedNode(item)}
+									onRenameClick={() => openRenameModal(item)}
+									onClickDelete={() => handleDelete(item)}>
+									<Folder
+										folderName={item.name}
+										setPath={setPath}
+										path={path}
+										setSearchTerm={setSearchTerm}
+										searchTerm={searchTerm}
+									/>
+								</ContextMenu>
+							)
+						)}
+					<AddImage
+						src={AddNewButton}
+						alt="add file or folder"
+						onClick={() => setShowAddModal(true)}
+					/>
+					<Modal
+						showModal={showAddModal}
+						handleClose={handleModalClose}
+						header={renameNode ? "Edit name" : "Create new"}
+						confirmText={renameNode ? "Save changes" : "Create"}
+						body={addModalBody()}
+						onConfirm={() =>
+							renameNode ? handleRenameNode() : handleAddNode()
+						}
+					/>
+				</NavigatorContainer>
+			</PageContainer>
+		</ContextMenu>
 	);
 };
 
